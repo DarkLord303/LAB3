@@ -1,0 +1,47 @@
+<%- include('./partials/header.ejs') %>
+<%- include('./partials/nav.ejs') %>
+
+<div class="container mt-5" style="max-width: 800px;">
+  <h2 class="text-center"><%= title %></h2>
+
+  <% if (posts.length > 0) { %>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Назва</th>
+          <th>Автор</th>
+          <th>Опис</th>
+          <th>Дії</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% posts.forEach((post) => { %>
+          <tr>
+            <td><%= post.title %></td>
+            <td><%= post.author %></td>
+            <td><%= post.description.substring(0, 100) %>...</td>
+            <td>
+              <a href="/edit-post/<%= post._id %>" class="btn btn-warning btn-sm">Редагувати</a>
+              <a href="#" data-id="<%= post._id %>" class="btn btn-danger btn-sm confirmDeletion">Видалити</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p class="text-center">Пости ще не створені!</p>
+  <% } %>
+</div>
+
+<%- include('./partials/footer.ejs') %>
+
+<script>
+  document.addEventListener("click", (e) => {
+    const id = e.target?.dataset?.id || null;
+    if (id && e.target.classList.contains('confirmDeletion')) {
+      fetch(`/posts/${id}`, { method: "DELETE" }).then(() => {
+        window.location.reload();
+      });
+    }
+  });
+</script>
